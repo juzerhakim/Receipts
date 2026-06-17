@@ -43,6 +43,45 @@
     font-size:11px; cursor:pointer; font-family:"DM Sans",sans-serif;
     text-align:center;
   }
+
+  /* Password Screen */
+  #password-screen {
+    position:fixed; inset:0; background:linear-gradient(135deg,#1A2E44,#1A8C4E);
+    z-index:9999; display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+  }
+  #password-screen.hidden { display:none; }
+  .pw-card {
+    background:white; border-radius:24px; padding:36px 28px;
+    width:calc(100% - 48px); max-width:340px; text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+  }
+  .pw-logo { font-size:52px; margin-bottom:12px; }
+  .pw-title { font-size:22px; font-weight:700; color:#1A2E44; margin-bottom:6px; }
+  .pw-sub { font-size:13px; color:#6B7280; margin-bottom:24px; }
+  .pw-input {
+    width:100%; padding:16px; border-radius:12px;
+    border:2px solid #E5E7EB; font-size:24px; font-weight:700;
+    text-align:center; letter-spacing:8px; color:#1A2E44;
+    font-family:"DM Sans",sans-serif; outline:none;
+    transition:border-color .2s; margin-bottom:16px;
+  }
+  .pw-input:focus { border-color:#1A8C4E; }
+  .pw-input.error { border-color:#EF4444; animation:shake .3s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-8px)}
+    75%{transform:translateX(8px)}
+  }
+  .pw-btn {
+    width:100%; padding:16px; background:#1A8C4E; color:white;
+    border:none; border-radius:12px; font-size:16px; font-weight:700;
+    cursor:pointer; font-family:"DM Sans",sans-serif;
+    transition:opacity .15s;
+  }
+  .pw-btn:active { opacity:.85; }
+  .pw-error { font-size:13px; color:#EF4444; margin-top:10px; display:none; }
+  .pw-footer { font-size:11px; color:rgba(255,255,255,.5); margin-top:20px; }
 </style>
 <style>
   :root {
@@ -201,6 +240,21 @@
 </style>
 </head>
 <body>
+
+<!-- Password Screen -->
+<div id="password-screen">
+  <div class="pw-card">
+    <div class="pw-logo">🧾</div>
+    <div class="pw-title">Juzer's Receipts</div>
+    <div class="pw-sub">Enter password to continue</div>
+    <input type="password" class="pw-input" id="pw-input" maxlength="4"
+      placeholder="••••" oninput="if(this.value.length===4)checkPassword()"
+      inputmode="numeric" autocomplete="off">
+    <div class="pw-error" id="pw-error">❌ Wrong password. Try again.</div>
+  </div>
+  <div class="pw-footer">Private — Juzer & Family only</div>
+</div>
+
 <div class="app-shell">
 
 <!-- HOME -->
@@ -232,8 +286,9 @@
         <span class="qa-icon" style="font-size:14px;font-weight:800;color:#92400E;" id="qa-cash-amount">AED 3,222</span>
         <span class="qa-label" style="color:#92400E;">💵 Cash</span>
       </button>
-      <button class="qa-btn" onclick="navTo('search')">
-        <span class="qa-icon">🔍</span><span class="qa-label">Search</span>
+      <button class="qa-btn" onclick="navTo('recent')" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1.5px solid #2563EB;">
+        <span class="qa-icon">🕐</span>
+        <span class="qa-label" style="color:#1D4ED8;">Recent</span>
       </button>
     </div>
     <div class="stats-card">
@@ -556,6 +611,22 @@
   </div>
 </div>
 
+<!-- RECENT TRANSACTIONS -->
+<div class="screen" id="screen-recent">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Back
+    </button>
+    <div style="font-size:16px;font-weight:700;color:var(--navy);">🕐 Recent</div>
+    <div style="width:60px;"></div>
+  </div>
+  <div class="content">
+    <div style="font-size:13px;color:var(--gray);padding:0 4px 14px;">Last 15 transactions across all months</div>
+    <div id="recent-list"></div>
+  </div>
+</div>
+
 <!-- Month Modal -->
 <div class="modal-overlay" id="month-modal" onclick="closeMonthModal(event)">
   <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -711,6 +782,17 @@ const ITEMS = [
   {store:"Mahad",bill:"#11013-M-Mu",date:"08-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Mahad Tuition Fees — Mustafa (Apr & May, 2×180)",cat:"Education",qty:2,price:180.00},
   {store:"Madrasa",bill:"#11013-MD-R",date:"08-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Madrasa Tuition Fees — Ruqaiyah (Feb-May, 4×210) + Exam Fees",cat:"Education",qty:1,price:920.00},
   {store:"Madrasa",bill:"#11013-MD-Mu",date:"08-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Madrasa Tuition Fees — Mustafa (Feb-May, 4×210) + Exam Fees",cat:"Education",qty:1,price:920.00},
+  {store:"Fuel Station",bill:"#48291",date:"12-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Fuel Special",cat:"Fuel",qty:1,price:30.00},
+  {store:"Grand Mall",bill:"#600",date:"12-Jun-2026",month:"Jun-2026",cashier:"Mohammed",payment:"Bank Card",barcode:"6291031000150",desc:"MM Full Cream Milk 1L",cat:"Dairy",qty:1,price:6.50},
+  {store:"Saloon",bill:"#13062026",date:"13-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Hair Cut",cat:"Grooming",qty:1,price:30.00},
+  {store:"General Expense",bill:"#1306",date:"13-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Cash",barcode:"",desc:"30 AED paid to Maqbool — Sadaqa and Tip",cat:"Other",qty:1,price:30.00},
+  {store:"Food Junction Restaurant",bill:"#23312",date:"13-Jun-2026",month:"Jun-2026",cashier:"Biller",payment:"Bank Card",barcode:"",desc:"Chole Bhature",cat:"Meal",qty:2,price:8.00},
+  {store:"Food Junction Restaurant",bill:"#23312",date:"13-Jun-2026",month:"Jun-2026",cashier:"Biller",payment:"Bank Card",barcode:"",desc:"Extra Bhatura",cat:"Meal",qty:4,price:3.00},
+  {store:"Emirates NBD",bill:"#112C5B28FE1D",date:"13-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Bank Transfer",barcode:"",desc:"Payment for Internet June and July — Transfer to Kaleelur Rahman (Standard Chartered)",cat:"Transfer",qty:1,price:200.00},
+  {store:"Grand Mall",bill:"#570862",date:"13-Jun-2026",month:"Jun-2026",cashier:"Joecell",payment:"Bank Card",barcode:"0012000520327",desc:"7P PET 1.25Ltr",cat:"Beverages",qty:1,price:5.00},
+  {store:"Grand Mall",bill:"#570862",date:"13-Jun-2026",month:"Jun-2026",cashier:"Joecell",payment:"Bank Card",barcode:"0000000001437",desc:"Potato Super",cat:"Vegetables",qty:0.523,price:1.99},
+  {store:"Grand Mall",bill:"#570862",date:"13-Jun-2026",month:"Jun-2026",cashier:"Joecell",payment:"Bank Card",barcode:"6291003025860",desc:"Finns Chilli 85gm 3S",cat:"Snacks",qty:1,price:10.99},
+  {store:"General Expense",bill:"#1406",date:"14-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"Filli Tea",cat:"Beverages",qty:1,price:16.00},
 ];
 
 const CAT_CFG = {
@@ -730,6 +812,9 @@ const CAT_CFG = {
   "Meat":            {emoji:"🥩", color:"#DC2626", bg:"#FEF2F2"},
   "Meal":            {emoji:"🥙", color:"#B45309", bg:"#FEF3C7"},
   "Electronics":     {emoji:"📱", color:"#0369A1", bg:"#E0F2FE"},
+  "Fuel":            {emoji:"⛽", color:"#DC2626", bg:"#FEF2F2"},
+  "Grooming":        {emoji:"✂️", color:"#7C3AED", bg:"#F5F3FF"},
+  "Transfer":        {emoji:"💸", color:"#0369A1", bg:"#E0F2FE"},
   "Education":       {emoji:"🎓", color:"#7C3AED", bg:"#F5F3FF"},
   "Other":           {emoji:"📦", color:"#9CA3AF", bg:"#F9FAFB"},
 };
@@ -741,6 +826,11 @@ const STORE_CFG = {
   "Diamond Spoon Cafe":      {emoji:"☕", color:"#B45309"},
   "Mohd. Abdul Rashid TR":  {emoji:"📱", color:"#0369A1"},
   "Habitat School":         {emoji:"🏫", color:"#7C3AED"},
+  "Fuel Station":           {emoji:"⛽", color:"#DC2626"},
+  "Saloon":                 {emoji:"✂️", color:"#7C3AED"},
+  "General Expense":        {emoji:"💸", color:"#6B7280"},
+  "Emirates NBD":           {emoji:"🏦", color:"#0369A1"},
+  "Food Junction Restaurant": {emoji:"🍛", color:"#B45309"},
   "Mahad":                  {emoji:"📖", color:"#059669"},
   "Madrasa":                {emoji:"🕌", color:"#0D7377"},
 };
@@ -790,7 +880,7 @@ function goBack() {
   document.querySelectorAll(".month-pill-label").forEach(e => e.textContent = currentMonth);
 }
 function navTo(tab) {
-  const map = {home:"screen-home",receipts:"screen-receipts",categories:"screen-categories",stores:"screen-stores",search:"screen-search",cash:"screen-cash",eatables:"screen-eatables"};
+  const map = {home:"screen-home",receipts:"screen-receipts",categories:"screen-categories",stores:"screen-stores",search:"screen-search",cash:"screen-cash",eatables:"screen-eatables",recent:"screen-recent"};
   screenStack = [];
   document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
   document.getElementById("nav-"+tab)?.classList.add("active");
@@ -799,6 +889,7 @@ function navTo(tab) {
   if (tab === "search") { renderSearchChips(); setTimeout(()=>document.getElementById("search-input")?.focus(),300); }
   if (tab === "cash") renderCashScreen();
   if (tab === "eatables") renderEatables();
+  if (tab === "recent") renderRecent();
 }
 function openMonthModal() {
   const opts = document.getElementById("month-options");
@@ -823,10 +914,10 @@ function renderHome() {
   const total = totalAmt(items);
   const receipts = getReceipts(currentMonth);
   const stores = [...new Set(items.map(i=>i.store))];
-  document.getElementById("hero-amount").textContent = fmt(total);
-  document.getElementById("stat-total").textContent = fmt(total);
+  document.getElementById("hero-amount").textContent = "AED " + Math.round(total).toLocaleString("en");
+  document.getElementById("stat-total").textContent = "AED " + Math.round(total).toLocaleString("en");
   document.getElementById("stat-receipts").textContent = receipts.length;
-  document.getElementById("stat-avg").textContent = receipts.length ? fmt(total/receipts.length) : "AED 0.00";
+  document.getElementById("stat-avg").textContent = receipts.length ? "AED " + Math.round(total/receipts.length).toLocaleString("en") : "AED 0";
   document.getElementById("stat-stores").textContent = stores.length;
   const byCat = groupBy(items,"cat");
   const catAmts = Object.entries(byCat).map(([cat,its])=>({cat,amt:totalAmt(its)})).sort((a,b)=>b.amt-a.amt).slice(0,5);
@@ -1224,7 +1315,7 @@ function getEatItems(month) {
 }
 
 function updateEatBadge() {
-  const total = getEatItems(null).reduce((s,i)=>s+i.qty*i.price,0);
+  const total = getEatItems(currentMonth).reduce((s,i)=>s+i.qty*i.price,0);
   const el = document.getElementById("qa-eat-amount");
   if (el) el.textContent = "AED " + Math.round(total).toLocaleString("en");
 }
@@ -1238,7 +1329,7 @@ function renderEatables() {
   const receipts = [...new Set(items.map(i=>i.bill))].length;
 
   const heroEl = document.getElementById("eat-hero-amount");
-  if (heroEl) heroEl.textContent = fmtCash(total);
+  if (heroEl) heroEl.textContent = "AED " + Math.round(total).toLocaleString("en");
   const mthEl = document.getElementById("eat-hero-month");
   if (mthEl) mthEl.textContent = (currentMonth || "ALL MONTHS").toUpperCase();
   document.getElementById("eat-stat-items").textContent    = items.length;
@@ -1279,10 +1370,22 @@ function renderEatables() {
 
 function filterEatByCategory(cat) {
   const items = getEatItems(currentMonth).filter(i=>i.cat===cat);
-  document.getElementById("eat-items-title").textContent = `${CAT_CFG[cat]?.emoji||""} ${cat} (${items.length} items)`;
+  const cfg = CAT_CFG[cat]||{emoji:"📦",color:"#666",bg:"#f5f5f5"};
+
+  // Show a back button + title above the list
+  document.getElementById("eat-items-title").innerHTML =
+    `<span onclick="renderEatables()" style="cursor:pointer;color:var(--green);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-bottom:6px;">
+      ‹ Back to all categories
+    </span><br>
+    <span style="color:${cfg.color};">${cfg.emoji} ${cat}</span>
+    <span style="font-size:14px;font-weight:400;color:var(--gray);"> (${items.length} item${items.length!==1?"s":""})</span>`;
+
   renderEatItemsList(items);
-  // scroll to list
-  document.getElementById("eat-items-list").scrollIntoView({behavior:"smooth", block:"start"});
+
+  // scroll down to list smoothly
+  setTimeout(()=>{
+    document.getElementById("eat-items-title").scrollIntoView({behavior:"smooth", block:"start"});
+  }, 100);
 }
 
 function renderEatItemsList(items) {
@@ -1290,34 +1393,133 @@ function renderEatItemsList(items) {
   if (!items.length) {
     list.innerHTML = `<div style="text-align:center;padding:40px 20px;">
       <div style="font-size:40px;margin-bottom:10px;">🍽️</div>
-      <div style="font-size:15px;color:var(--gray);">No eatable items found</div>
+      <div style="font-size:15px;color:var(--gray);">No items found in this category</div>
     </div>`; return;
   }
-  const sorted = [...items].sort((a,b)=>b.date.localeCompare(a.date));
-  list.innerHTML = sorted.map(item => {
-    const cfg = CAT_CFG[item.cat]||{emoji:"📦",color:"#666",bg:"#f5f5f5"};
-    const sc  = STORE_CFG[item.store]||{emoji:"🏪",color:"#666"};
-    return `<div style="background:var(--card);border-radius:var(--r);margin-bottom:10px;padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;">
-      <div style="width:44px;height:44px;border-radius:13px;background:${cfg.bg};display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;">${cfg.emoji}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:14px;font-weight:700;color:${cfg.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
-        <div style="font-size:11px;color:var(--gray);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
-          <span>${sc.emoji} ${item.store}</span>
-          <span style="color:var(--border);">·</span>
-          <span>📅 ${item.date}</span>
-          <span style="color:var(--border);">·</span>
-          <span>${item.bill}</span>
+
+  // Group by bill (store + date) to show receipt-style sections like Image 1
+  const byBill = {};
+  items.forEach(i => {
+    const key = i.bill;
+    if (!byBill[key]) byBill[key] = {store:i.store, date:i.date, bill:i.bill, items:[]};
+    byBill[key].items.push(i);
+  });
+
+  // Sort bills by date desc
+  const sortedBills = Object.values(byBill).sort((a,b)=>b.date.localeCompare(a.date));
+
+  list.innerHTML = sortedBills.map(group => {
+    const sc = STORE_CFG[group.store]||{emoji:"🏪",color:"#666"};
+    return `
+      <!-- Store/date section header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px;margin-top:8px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:600;">
+          <span>${sc.emoji}</span>
+          <span style="color:var(--navy);">${group.store}</span>
+          <span>·</span>
+          <span>${group.date}</span>
         </div>
-        <div style="font-size:11px;color:var(--gray);margin-top:3px;">
-          <span style="background:${cfg.bg};color:${cfg.color};padding:2px 7px;border-radius:99px;font-weight:600;font-size:10px;">${cfg.emoji} ${item.cat}</span>
-          <span style="margin-left:6px;">Qty: ${item.qty} @ ${fmt(item.price)} each</span>
-        </div>
+        <span style="font-size:12px;color:var(--gray);">${group.bill}</span>
       </div>
-      <div style="text-align:right;flex-shrink:0;">
-        <div style="font-size:15px;font-weight:700;color:var(--green);">${fmt(item.qty*item.price)}</div>
-        <div style="font-size:10px;color:var(--gray);margin-top:2px;">${item.month}</div>
-      </div>
-    </div>`;
+      <!-- Items under this receipt -->
+      ${group.items.map((item,idx) => {
+        const cfg = CAT_CFG[item.cat]||{emoji:"📦",color:"#666",bg:"#f5f5f5"};
+        return `<div style="background:var(--card);border-radius:var(--r-sm);margin-bottom:8px;padding:13px 16px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:3px;">Qty: ${item.qty} @ ${fmt(item.price)} each</div>
+          </div>
+          <div style="font-size:15px;font-weight:700;color:var(--green);flex-shrink:0;">${fmt(item.qty*item.price)}</div>
+        </div>`;
+      }).join("")}`;
+  }).join("");
+}
+
+
+
+// ══════════════════════════════════════════
+// PASSWORD PROTECTION
+// ══════════════════════════════════════════
+const CORRECT_PASSWORD = "1570";
+
+function checkPassword() {
+  const input = document.getElementById("pw-input");
+  const error = document.getElementById("pw-error");
+  if (input.value === CORRECT_PASSWORD) {
+    // Save to session so no need to re-enter on refresh same session
+    sessionStorage.setItem("auth", "ok");
+    document.getElementById("password-screen").classList.add("hidden");
+    input.classList.remove("error");
+    error.style.display = "none";
+  } else {
+    input.classList.add("error");
+    error.style.display = "block";
+    input.value = "";
+    setTimeout(()=>input.classList.remove("error"), 400);
+  }
+}
+
+// Check if already authenticated this session
+(function() {
+  if (sessionStorage.getItem("auth") === "ok") {
+    document.getElementById("password-screen").classList.add("hidden");
+  } else {
+    // Auto focus input and open keyboard
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const inp = document.getElementById("pw-input");
+        if (inp) inp.focus();
+      }, 300);
+    });
+  }
+})();
+
+// ══════════════════════════════════════════
+// RECENT TRANSACTIONS
+// ══════════════════════════════════════════
+function parseDate(d) {
+  // Convert "13-Jun-2026" to sortable number
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const parts = d.split("-");
+  if (parts.length === 3) return new Date(parts[2], months[parts[1]]||0, parseInt(parts[0])).getTime();
+  return 0;
+}
+
+function renderRecent() {
+  const list = document.getElementById("recent-list");
+  if (!list) return;
+
+  // Get last 15 unique receipts sorted by date desc
+  const byBill = {};
+  ITEMS.forEach(i => {
+    if (!byBill[i.bill]) byBill[i.bill] = {bill:i.bill, store:i.store, date:i.date, payment:i.payment, items:[]};
+    byBill[i.bill].items.push(i);
+  });
+
+  const receipts = Object.values(byBill)
+    .sort((a,b) => parseDate(b.date) - parseDate(a.date))
+    .slice(0, 15);
+
+  if (!receipts.length) {
+    list.innerHTML = `<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;">🕐</div><div style="font-size:15px;color:var(--gray);margin-top:12px;">No transactions yet</div></div>`;
+    return;
+  }
+
+  list.innerHTML = receipts.map((r, idx) => {
+    const sc = STORE_CFG[r.store]||{emoji:"🏪",color:"#2563EB"};
+    const total = r.items.reduce((s,i)=>s+i.qty*i.price,0);
+    return "<div onclick=\"openReceipt('" + r.bill + "')\" style=\"background:var(--card);border-radius:var(--r);margin-bottom:10px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;cursor:pointer;\">"
+      + "<div style=\"width:48px;height:48px;border-radius:13px;background:" + sc.color + "18;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;\">" + sc.emoji + "</div>"
+      + "<div style=\"flex:1;min-width:0;\">"
+        + "<div style=\"font-size:15px;font-weight:700;color:var(--navy);\">" + r.store + "</div>"
+        + "<div style=\"font-size:12px;color:var(--gray);margin-top:3px;\">📅 " + r.date + " &nbsp;·&nbsp; " + r.bill + "</div>"
+        + "<div style=\"font-size:11px;color:var(--gray);margin-top:2px;\">" + r.items.length + " item" + (r.items.length>1?"s":"") + " · " + r.payment + "</div>"
+      + "</div>"
+      + "<div style=\"text-align:right;flex-shrink:0;\">"
+        + "<div style=\"font-size:16px;font-weight:700;color:var(--green);\">" + fmt(total) + "</div>"
+        + "<div style=\"font-size:18px;color:var(--gray);margin-top:4px;\">›</div>"
+      + "</div>"
+    + "</div>";
   }).join("");
 }
 
@@ -1325,6 +1527,7 @@ function renderEatItemsList(items) {
 // CASH WALLET
 // ══════════════════════════════════════════
 const CASH_TRANSACTIONS = [
+  {type:"in", amount:500.00, desc:"Cash Withdrawal — ATM", date:"14-Jun-2026"},
   {type:"in",  amount:3240.00, desc:"Opening Balance", date:"01-Jun-2026"},
   {type:"out", amount:18.00,   desc:"Shawarma 3 Pcs — Diamond Spoon Cafe", date:"08-Jun-2026"},
   {type:"out", amount:500.00,  desc:"Samsung S21 FE + Cover + Glass — Mohd. Abdul Rashid TR", date:"09-Jun-2026"},
@@ -1332,6 +1535,9 @@ const CASH_TRANSACTIONS = [
   {type:"out", amount:360.00,  desc:"Mahad Tuition Fees — Mustafa (Apr & May)", date:"08-Jun-2026"},
   {type:"out", amount:920.00,  desc:"Madrasa Fees — Ruqaiyah (Feb-May + Exam)", date:"08-Jun-2026"},
   {type:"out", amount:920.00,  desc:"Madrasa Fees — Mustafa (Feb-May + Exam)", date:"08-Jun-2026"},
+  {type:"out", amount:30.00,   desc:"Fuel Special — Fuel Station", date:"12-Jun-2026"},
+  {type:"out", amount:30.00,   desc:"Hair Cut — Saloon", date:"13-Jun-2026"},
+  {type:"out", amount:30.00,   desc:"Sadaqa & Tip to Maqbool — General Expense", date:"13-Jun-2026"},
 ];
 
 function getCashBalance() {
@@ -1343,7 +1549,7 @@ function fmtCash(n) { return "AED " + n.toLocaleString("en",{minimumFractionDigi
 function updateCashBadge() {
   const bal = getCashBalance();
   const el = document.getElementById("qa-cash-amount");
-  if (el) el.textContent = "AED " + bal.toLocaleString("en",{minimumFractionDigits:0,maximumFractionDigits:0});
+  if (el) el.textContent = "AED " + Math.round(bal).toLocaleString("en");
 }
 
 function renderCashScreen() {
@@ -1352,9 +1558,9 @@ function renderCashScreen() {
   const txCount = CASH_TRANSACTIONS.filter(t=>t.type==="out").length;
 
   const heroEl = document.getElementById("cash-hero-balance");
-  if (heroEl) heroEl.textContent = fmtCash(bal);
+  if (heroEl) heroEl.textContent = "AED " + Math.round(bal).toLocaleString("en");
   const spentEl = document.getElementById("cash-total-spent");
-  if (spentEl) spentEl.textContent = fmtCash(spent);
+  if (spentEl) spentEl.textContent = "AED " + Math.round(spent).toLocaleString("en");
   const cntEl = document.getElementById("cash-tx-count");
   if (cntEl) cntEl.textContent = txCount;
 
