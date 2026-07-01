@@ -43,6 +43,45 @@
     font-size:11px; cursor:pointer; font-family:"DM Sans",sans-serif;
     text-align:center;
   }
+
+  /* Password Screen */
+  #password-screen {
+    position:fixed; inset:0; background:linear-gradient(135deg,#1A2E44,#1A8C4E);
+    z-index:9999; display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+  }
+  #password-screen.hidden { display:none; }
+  .pw-card {
+    background:white; border-radius:24px; padding:36px 28px;
+    width:calc(100% - 48px); max-width:340px; text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+  }
+  .pw-logo { font-size:52px; margin-bottom:12px; }
+  .pw-title { font-size:22px; font-weight:700; color:#1A2E44; margin-bottom:6px; }
+  .pw-sub { font-size:13px; color:#6B7280; margin-bottom:24px; }
+  .pw-input {
+    width:100%; padding:16px; border-radius:12px;
+    border:2px solid #E5E7EB; font-size:24px; font-weight:700;
+    text-align:center; letter-spacing:8px; color:#1A2E44;
+    font-family:"DM Sans",sans-serif; outline:none;
+    transition:border-color .2s; margin-bottom:16px;
+  }
+  .pw-input:focus { border-color:#1A8C4E; }
+  .pw-input.error { border-color:#EF4444; animation:shake .3s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-8px)}
+    75%{transform:translateX(8px)}
+  }
+  .pw-btn {
+    width:100%; padding:16px; background:#1A8C4E; color:white;
+    border:none; border-radius:12px; font-size:16px; font-weight:700;
+    cursor:pointer; font-family:"DM Sans",sans-serif;
+    transition:opacity .15s;
+  }
+  .pw-btn:active { opacity:.85; }
+  .pw-error { font-size:13px; color:#EF4444; margin-top:10px; display:none; }
+  .pw-footer { font-size:11px; color:rgba(255,255,255,.5); margin-top:20px; }
 </style>
 <style>
   :root {
@@ -202,6 +241,19 @@
 </head>
 <body>
 
+<!-- Password Screen -->
+<div id="password-screen">
+  <div class="pw-card">
+    <div class="pw-logo">🧾</div>
+    <div class="pw-title">Juzer's Receipts</div>
+    <div class="pw-sub">Enter password to continue</div>
+    <input type="password" class="pw-input" id="pw-input" maxlength="4"
+      placeholder="••••" oninput="if(this.value.length===4)checkPassword()"
+      inputmode="numeric" autocomplete="off" autofocus>
+    <div class="pw-error" id="pw-error">❌ Wrong password. Try again.</div>
+  </div>
+  <div class="pw-footer">Private — Juzer & Family only</div>
+</div>
 
 <div class="app-shell">
 
@@ -1384,6 +1436,44 @@ function renderEatItemsList(items) {
   }).join("");
 }
 
+
+
+// ══════════════════════════════════════════
+// PASSWORD PROTECTION
+// ══════════════════════════════════════════
+const CORRECT_PASSWORD = "1570";
+
+function checkPassword() {
+  const input = document.getElementById("pw-input");
+  const error = document.getElementById("pw-error");
+  if (input.value === CORRECT_PASSWORD) {
+    // Save to session so no need to re-enter on refresh same session
+    sessionStorage.setItem("auth", "ok");
+    document.getElementById("password-screen").classList.add("hidden");
+    input.classList.remove("error");
+    error.style.display = "none";
+  } else {
+    input.classList.add("error");
+    error.style.display = "block";
+    input.value = "";
+    setTimeout(()=>input.classList.remove("error"), 400);
+  }
+}
+
+// Check if already authenticated this session
+(function() {
+  if (sessionStorage.getItem("auth") === "ok") {
+    document.getElementById("password-screen").classList.add("hidden");
+  } else {
+    // Auto focus input and open keyboard
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const inp = document.getElementById("pw-input");
+        if (inp) inp.focus();
+      }, 300);
+    });
+  }
+})();
 
 // ══════════════════════════════════════════
 // RECENT TRANSACTIONS
