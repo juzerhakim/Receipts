@@ -44,44 +44,6 @@
     text-align:center;
   }
 
-  /* Password Screen */
-  #password-screen {
-    position:fixed; inset:0; background:linear-gradient(135deg,#1A2E44,#1A8C4E);
-    z-index:9999; display:flex; align-items:center; justify-content:center;
-    flex-direction:column;
-  }
-  #password-screen.hidden { display:none; }
-  .pw-card {
-    background:white; border-radius:24px; padding:36px 28px;
-    width:calc(100% - 48px); max-width:340px; text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.3);
-  }
-  .pw-logo { font-size:52px; margin-bottom:12px; }
-  .pw-title { font-size:22px; font-weight:700; color:#1A2E44; margin-bottom:6px; }
-  .pw-sub { font-size:13px; color:#6B7280; margin-bottom:24px; }
-  .pw-input {
-    width:100%; padding:16px; border-radius:12px;
-    border:2px solid #E5E7EB; font-size:24px; font-weight:700;
-    text-align:center; letter-spacing:8px; color:#1A2E44;
-    font-family:"DM Sans",sans-serif; outline:none;
-    transition:border-color .2s; margin-bottom:16px;
-  }
-  .pw-input:focus { border-color:#1A8C4E; }
-  .pw-input.error { border-color:#EF4444; animation:shake .3s; }
-  @keyframes shake {
-    0%,100%{transform:translateX(0)}
-    25%{transform:translateX(-8px)}
-    75%{transform:translateX(8px)}
-  }
-  .pw-btn {
-    width:100%; padding:16px; background:#1A8C4E; color:white;
-    border:none; border-radius:12px; font-size:16px; font-weight:700;
-    cursor:pointer; font-family:"DM Sans",sans-serif;
-    transition:opacity .15s;
-  }
-  .pw-btn:active { opacity:.85; }
-  .pw-error { font-size:13px; color:#EF4444; margin-top:10px; display:none; }
-  .pw-footer { font-size:11px; color:rgba(255,255,255,.5); margin-top:20px; }
 </style>
 <style>
   :root {
@@ -241,19 +203,6 @@
 </head>
 <body>
 
-<!-- Password Screen -->
-<div id="password-screen">
-  <div class="pw-card">
-    <div class="pw-logo">🧾</div>
-    <div class="pw-title">Juzer's Receipts</div>
-    <div class="pw-sub">Enter password to continue</div>
-    <input type="password" class="pw-input" id="pw-input" maxlength="4"
-      placeholder="••••" oninput="if(this.value.length===4)checkPassword()"
-      inputmode="numeric" autocomplete="off" autofocus>
-    <div class="pw-error" id="pw-error">❌ Wrong password. Try again.</div>
-  </div>
-  <div class="pw-footer">Private — Juzer & Family only</div>
-</div>
 
 <div class="app-shell">
 
@@ -807,6 +756,15 @@ const ITEMS = [
   {store:"SEWA",bill:"#301678295",date:"29-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Online Payment",barcode:"",desc:"Gas Service For Residential - Expat",cat:"Utilities",qty:1,price:22.40},
   {store:"SEWA",bill:"#301678295",date:"29-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Online Payment",barcode:"",desc:"Other Payments",cat:"Utilities",qty:1,price:32.55},
   {store:"Grand Mall",bill:"#217092",date:"30-May-2026",month:"May-2026",cashier:"—",payment:"Bank Card",barcode:"2000006183941",desc:"Parajohn PP Trolley PJTR3183-28",cat:"Bags",qty:1,price:159.00},
+  {store:"RTA Dubai Taxi",bill:"#AC032-2026071419-462-5",date:"14-Jul-2026",month:"Jul-2026",cashier:"Tayyab Ur Rehman Muhammad Riaz",payment:"Bank Card",barcode:"",desc:"Dubai Taxi — Airport Terminal 1 to Sharjah (18km, 36mins)",cat:"Transport",qty:1,price:103.00},
+  {store:"Nazar-ul-Maqam",bill:"#1407",date:"14-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Reach Home Safely",cat:"Transport",qty:1,price:21.00},
+  {store:"Afrah Al Madina Cafeteria",bill:"#126825",date:"14-Jul-2026",month:"Jul-2026",cashier:"456",payment:"Bank Card",barcode:"",desc:"Shawarma",cat:"Meal",qty:5,price:5.00},
+  {store:"Darul Kutub",bill:"#2555",date:"14-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"STD 3 Books (INR 1075 @ 26.17 rate)",cat:"Education",qty:1,price:41.08},
+  {store:"Darul Kutub",bill:"#2555",date:"14-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"STD 6 Books (INR 885 @ 26.17 rate)",cat:"Education",qty:1,price:33.82},
+  {store:"Grand Mall",bill:"#33489",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"8906020588660",desc:"ID Ntrlweatprta 3x40",cat:"Snacks",qty:1,price:9.99},
+  {store:"Grand Mall",bill:"#33489",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"0000000001437",desc:"Potato Super",cat:"Vegetables",qty:1.629,price:3.50},
+  {store:"Grand Mall",bill:"#33358",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"6291031000136",desc:"MM Full Cream Milk 2",cat:"Dairy",qty:1,price:10.99},
+  {store:"Grand Mall",bill:"#33358",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"6291044111300",desc:"SA Mango Milk Shake",cat:"Beverages",qty:1,price:3.00},
 ];
 
 const CAT_CFG = {
@@ -830,6 +788,7 @@ const CAT_CFG = {
   "Grooming":        {emoji:"✂️", color:"#7C3AED", bg:"#F5F3FF"},
   "Transfer":        {emoji:"💸", color:"#0369A1", bg:"#E0F2FE"},
   "Utilities":       {emoji:"⚡", color:"#D97706", bg:"#FEF3C7"},
+  "Transport":       {emoji:"🚕", color:"#7C3AED", bg:"#F5F3FF"},
   "Education":       {emoji:"🎓", color:"#7C3AED", bg:"#F5F3FF"},
   "Other":           {emoji:"📦", color:"#9CA3AF", bg:"#F9FAFB"},
 };
@@ -846,13 +805,31 @@ const STORE_CFG = {
   "General Expense":        {emoji:"💸", color:"#6B7280"},
   "Emirates NBD":           {emoji:"🏦", color:"#0369A1"},
   "SEWA":                   {emoji:"⚡", color:"#D97706"},
+  "RTA Dubai Taxi":         {emoji:"🚕", color:"#7C3AED"},
+  "Nazar-ul-Maqam":         {emoji:"🚖", color:"#9333EA"},
+  "Afrah Al Madina Cafeteria": {emoji:"🥙", color:"#B45309"},
+  "Darul Kutub":              {emoji:"📚", color:"#7C3AED"},
   "Food Junction Restaurant": {emoji:"🍛", color:"#B45309"},
   "Mahad":                  {emoji:"📖", color:"#059669"},
   "Madrasa":                {emoji:"🕌", color:"#0D7377"},
 };
 
-const MONTHS = ["May-2026","Jun-2026"];
-let currentMonth = "Jun-2026";
+// Auto-generate months from ITEMS data
+const MONTH_ORDER_BUILD = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+const MONTHS = [...new Set(ITEMS.map(i=>i.month))].sort((a,b)=>{
+  const [am,ay]=a.split("-"); const [bm,by]=b.split("-");
+  return (parseInt(ay)-parseInt(by)) || (MONTH_ORDER_BUILD[am]||0)-(MONTH_ORDER_BUILD[bm]||0);
+});
+// Auto-set to latest month in data
+const MONTH_ORDER = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+function getLatestMonth() {
+  const months = [...new Set(ITEMS.map(i=>i.month))];
+  return months.sort((a,b)=>{
+    const [am,ay]=a.split("-"); const [bm,by]=b.split("-");
+    return (parseInt(by)-parseInt(ay)) || (MONTH_ORDER[bm]||0)-(MONTH_ORDER[am]||0);
+  })[0] || "Jul-2026";
+}
+let currentMonth = getLatestMonth();
 let screenStack = [];
 let currentScreen = "screen-home";
 
@@ -1454,43 +1431,6 @@ function renderEatItemsList(items) {
 
 
 // ══════════════════════════════════════════
-// PASSWORD PROTECTION
-// ══════════════════════════════════════════
-const CORRECT_PASSWORD = "1570";
-
-function checkPassword() {
-  const input = document.getElementById("pw-input");
-  const error = document.getElementById("pw-error");
-  if (input.value === CORRECT_PASSWORD) {
-    // Save to session so no need to re-enter on refresh same session
-    sessionStorage.setItem("auth", "ok");
-    document.getElementById("password-screen").classList.add("hidden");
-    input.classList.remove("error");
-    error.style.display = "none";
-  } else {
-    input.classList.add("error");
-    error.style.display = "block";
-    input.value = "";
-    setTimeout(()=>input.classList.remove("error"), 400);
-  }
-}
-
-// Check if already authenticated this session
-(function() {
-  if (sessionStorage.getItem("auth") === "ok") {
-    document.getElementById("password-screen").classList.add("hidden");
-  } else {
-    // Auto focus input and open keyboard
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        const inp = document.getElementById("pw-input");
-        if (inp) inp.focus();
-      }, 300);
-    });
-  }
-})();
-
-// ══════════════════════════════════════════
 // RECENT TRANSACTIONS
 // ══════════════════════════════════════════
 function parseDate(d) {
@@ -1554,6 +1494,7 @@ const CASH_TRANSACTIONS = [
   {type:"out", amount:30.00,   desc:"Fuel Special — Fuel Station", date:"12-Jun-2026"},
   {type:"out", amount:30.00,   desc:"Hair Cut — Saloon", date:"13-Jun-2026"},
   {type:"out", amount:30.00,   desc:"Sadaqa & Tip to Maqbool — General Expense", date:"13-Jun-2026"},
+  {type:"out", amount:21.00,   desc:"Reach Home Safely — Nazar-ul-Maqam", date:"14-Jul-2026"},
 ];
 
 function getCashBalance() {
