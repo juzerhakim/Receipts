@@ -763,6 +763,14 @@ const ITEMS = [
   {store:"Darul Kutub",bill:"#2555",date:"14-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"STD 6 Books (INR 885 @ 26.17 rate)",cat:"Education",qty:1,price:33.82},
   {store:"Grand Mall",bill:"#33489",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"8906020588660",desc:"ID Ntrlweatprta 3x40",cat:"Snacks",qty:1,price:9.99},
   {store:"Grand Mall",bill:"#33489",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"0000000001437",desc:"Potato Super",cat:"Vegetables",qty:1.629,price:3.50},
+  {store:"Al Ateek Real Estate",bill:"#AER-2026-0724",date:"24-Jun-2026",month:"Jun-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"Rent Payment",cat:"Rent",qty:1,price:2333.00},
+  {store:"Starcare Medical Center",bill:"#EA0054910775",date:"15-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"Doctor Consultation — Dr Arun Sreevidya (Pediatric) — Patient: Ruqaiyah Juzer Rampurawala",cat:"Medical",qty:1,price:9.00},
+  {store:"Veloura Scents",bill:"#1507A",date:"15-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"Sugarcane Juice",cat:"Beverages",qty:4,price:3.00},
+  {store:"Life Pharmacy",bill:"#3678478437",date:"15-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"116444",desc:"Augmentin 625mg Tab 20s (x0.5)",cat:"Medical",qty:0.5,price:9.62},
+  {store:"Life Pharmacy",bill:"#3678478437",date:"15-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"111959",desc:"Fusibact 2% Ointment 15g Tube",cat:"Medical",qty:1,price:0.00},
+  {store:"DU Telecom",bill:"#1507DU",date:"15-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Card",barcode:"",desc:"80 National Minutes Pack — Valid 30 Days",cat:"Utilities",qty:1,price:10.00},
+  {store:"Emirates NBD",bill:"#15ADD4DAD1C9",date:"16-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Bank Transfer",barcode:"",desc:"Vehicle Repair — Transfer to Vajuhudeen (Emirates NBD)",cat:"Vehicle",qty:1,price:100.00},
+  {store:"General Expense",bill:"#1607",date:"16-Jul-2026",month:"Jul-2026",cashier:"—",payment:"Cash",barcode:"",desc:"Thali Delivery — Paid to Maqbool",cat:"Meal",qty:1,price:50.00},
   {store:"Grand Mall",bill:"#33358",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"6291031000136",desc:"MM Full Cream Milk 2",cat:"Dairy",qty:1,price:10.99},
   {store:"Grand Mall",bill:"#33358",date:"15-Jul-2026",month:"Jul-2026",cashier:"Dumitha",payment:"Bank Card",barcode:"6291044111300",desc:"SA Mango Milk Shake",cat:"Beverages",qty:1,price:3.00},
 ];
@@ -789,6 +797,9 @@ const CAT_CFG = {
   "Transfer":        {emoji:"💸", color:"#0369A1", bg:"#E0F2FE"},
   "Utilities":       {emoji:"⚡", color:"#D97706", bg:"#FEF3C7"},
   "Transport":       {emoji:"🚕", color:"#7C3AED", bg:"#F5F3FF"},
+  "Rent":            {emoji:"🏠", color:"#DC2626", bg:"#FEF2F2"},
+  "Vehicle":         {emoji:"🔧", color:"#92400E", bg:"#FEF3C7"},
+  "Medical":         {emoji:"🏥", color:"#DC2626", bg:"#FEF2F2"},
   "Education":       {emoji:"🎓", color:"#7C3AED", bg:"#F5F3FF"},
   "Other":           {emoji:"📦", color:"#9CA3AF", bg:"#F9FAFB"},
 };
@@ -809,6 +820,11 @@ const STORE_CFG = {
   "Nazar-ul-Maqam":         {emoji:"🚖", color:"#9333EA"},
   "Afrah Al Madina Cafeteria": {emoji:"🥙", color:"#B45309"},
   "Darul Kutub":              {emoji:"📚", color:"#7C3AED"},
+  "Al Ateek Real Estate":     {emoji:"🏠", color:"#DC2626"},
+  "Starcare Medical Center":  {emoji:"🏥", color:"#DC2626"},
+  "Veloura Scents":           {emoji:"🥤", color:"#15803D"},
+  "Life Pharmacy":            {emoji:"💊", color:"#0369A1"},
+  "DU Telecom":               {emoji:"📱", color:"#CC0000"},
   "Food Junction Restaurant": {emoji:"🍛", color:"#B45309"},
   "Mahad":                  {emoji:"📖", color:"#059669"},
   "Madrasa":                {emoji:"🕌", color:"#0D7377"},
@@ -1495,6 +1511,7 @@ const CASH_TRANSACTIONS = [
   {type:"out", amount:30.00,   desc:"Hair Cut — Saloon", date:"13-Jun-2026"},
   {type:"out", amount:30.00,   desc:"Sadaqa & Tip to Maqbool — General Expense", date:"13-Jun-2026"},
   {type:"out", amount:21.00,   desc:"Reach Home Safely — Nazar-ul-Maqam", date:"14-Jul-2026"},
+  {type:"out", amount:50.00,   desc:"Thali Delivery — Maqbool", date:"16-Jul-2026"},
 ];
 
 function getCashBalance() {
